@@ -10,7 +10,7 @@ var app= express();
 
 	app.use(bodyParser());
 
-console.log(getconf().nginx);
+
 
 
 
@@ -56,8 +56,31 @@ router.get('/swconfig', function(req, res, next) {
 });
 
 router.get('/main', function(req, res, next) {
-  res.render('mainconfig.ejs',{user:conx.nginx.user._value,wkpc:conx.nginx.worker_processes._value,
-wrn:conx.nginx.worker_rlimit_nofile._value,err:conx.nginx.error_log._value,pid:conx.nginx.pid._value});
+
+
+
+var x=[];
+
+NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
+	  if (err) {
+	    console.log(err);
+	    
+	  }else{
+
+	  	x=getformarr('',conf);
+
+	  	console.log(x);
+
+	  	 res.render('mainconfig.ejs',{elements:x});
+
+		
+
+	}	
+
+	});
+
+
+ 
 });
 
 
@@ -89,36 +112,21 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 
 
-function getconf(){
-
-	var cnf='';
-
-NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
-	  if (err) {
-	    console.log(err);
-	    
-	  }else{
-
-	  	cnf=conf;
-
-		
-
-	}	
-
-	});
-
-return cnf;
-}
-
-
-
-
 function getformarr(type,cnf){
 
 	var conf=cnf;
+	var t;
 
-		
-	var t= Object.keys(eval('conf.nginx.'+type));
+	if(type==''){
+
+		t= Object.keys(eval('conf.nginx'));
+
+	}else{
+
+		t= Object.keys(eval('conf.nginx.'+type));
+
+	}		
+	
 	t.shift();
 	t.shift();
 	t.shift();
@@ -127,41 +135,66 @@ function getformarr(type,cnf){
 	var arr=[];
 
 
-	for(var i in t) {                    
-    if(typeof t[i] === Object) {
-    	
-    	//console.log(t[i]);
-    	console.log(t[i] +' == '+  eval('conf.nginx.http.'+ t[i] +'._value'));
+	if(type ==''){
 
-    } else {
-    // Do another thing
+		for(var i in t) {  
 
-     if(eval('conf.nginx.http.'+t[i]+'._value') == ''){
-  		var j=Object.keys(eval('conf.nginx.http.'+t[i]))
-			  j.shift();
-			  j.shift();
-			  j.shift();
-			  j.shift();
-    		console.log(j);
+			console.log(i);
 
-    		for(var k in j){
+			if(eval('conf.nginx.'+t[i]+'._value') == ''){
+				console.log('array');
+			}else{
+				arr.push({name:t[i],url:'conf.nginx.'+t[i], value:eval('conf.nginx.'+t[i]+'._value')});
+			}
 
-    			arr.push({name:t[i] +' - ' + j[k],url:'conf.nginx.http.'+t[i]+'.'+j[k],value:eval('conf.nginx.http.'+t[i]+'.'+j[k]+'._value')});
+			
 
-    		}
 
-    }else{
-
-    		arr.push({name:t[i],url:'conf.nginx.http.'+t[i], value:eval('conf.nginx.http.'+t[i])});
+		}
 
 
 
-    	}
+	}else{
+
+			for(var i in t) {                    
+			    if(typeof t[i] === Object) {
+			    	
+			    	//console.log(t[i]);
+			    	console.log(t[i] +' == '+  eval('conf.nginx.http.'+ t[i] +'._value'));
+
+			    } else {
+			    // Do another thing
+
+			     if(eval('conf.nginx.http.'+t[i]+'._value') == ''){
+			  		var j=Object.keys(eval('conf.nginx.http.'+t[i]))
+						  j.shift();
+						  j.shift();
+						  j.shift();
+						  j.shift();
+			    		console.log(j);
+
+			    		for(var k in j){
+
+			    			arr.push({name:t[i] +' - ' + j[k],url:'conf.nginx.http.'+t[i]+'.'+j[k],value:eval('conf.nginx.http.'+t[i]+'.'+j[k]+'._value')});
+
+			    		}
+
+			    }else{
+
+			    		arr.push({name:t[i],url:'conf.nginx.http.'+t[i], value:eval('conf.nginx.http.'+t[i]+'._value')});
 
 
-    
-    }
-}
+
+			    	}
+
+
+			    
+			    }
+			}
+
+	}
+
+	
 	
 	return arr;
 }
