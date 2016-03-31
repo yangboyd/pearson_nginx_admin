@@ -37,7 +37,7 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 	  	x=getformarr('http',conf);
 
-	  	console.log(x);
+	  	
 
 	  	res.render('httpconfig.ejs',{elements:x} );
 
@@ -53,6 +53,37 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 router.get('/swconfig', function(req, res, next) {
   res.render('swconfig.ejs');
+});
+
+
+router.post('/mainpost',function(req,res,next){
+
+	var arr=[]
+
+	arr=req.body;
+
+	console.log(arr);
+
+
+NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
+  if (err) {
+    console.log(err);
+    return;
+  }
+
+	for(var i in arr){
+
+		console.log(i);
+		console.log(arr[i]);
+		eval(i+'._value ='+' arr[i]' +';');
+
+
+		
+	}
+
+});
+
+res.redirect('/main');
 });
 
 router.get('/main', function(req, res, next) {
@@ -115,9 +146,13 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 function getformarr(type,cnf){
 
 	var conf=cnf;
-	var t;
+	var t,m;
+
+
 
 	if(type==''){
+
+
 
 		t= Object.keys(eval('conf.nginx'));
 
@@ -126,7 +161,26 @@ function getformarr(type,cnf){
 		t= Object.keys(eval('conf.nginx.'+type));
 
 	}		
-	
+	console.log('dhuhudf');
+var l=eval('conf.nginx.http');
+
+	var z=JSON.stringify(l);
+
+	var pssed=JSON.parse(z)
+
+		console.log(pssed);
+
+	for(var y in pssed){
+
+		if(y.constructor == Object){
+			console.log(y.constructor);
+		}else{
+			//console.log(y);
+			console.log(y);
+			console.log(pssed[y].constructor);
+		}
+	}
+
 	t.shift();
 	t.shift();
 	t.shift();
@@ -134,15 +188,17 @@ function getformarr(type,cnf){
 
 	var arr=[];
 
+	
+
 
 	if(type ==''){
 
 		for(var i in t) {  
 
-			console.log(i);
+			
 
 			if(eval('conf.nginx.'+t[i]+'._value') == ''){
-				console.log('array');
+				
 			}else{
 				arr.push({name:t[i],url:'conf.nginx.'+t[i], value:eval('conf.nginx.'+t[i]+'._value')});
 			}
@@ -171,7 +227,7 @@ function getformarr(type,cnf){
 						  j.shift();
 						  j.shift();
 						  j.shift();
-			    		console.log(j);
+			    		
 
 			    		for(var k in j){
 
