@@ -129,12 +129,44 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 	for(var i in arr){
 
+		if(String(arr[i]).split(',').length > 1){
 
-		eval(i+'._value ='+ arr[i] +';');
+			var spt= [];
+			spt= String(arr[i]).split(',');
+
+			// console.log(spt);
+
+			for(var u=0; u<spt.length ;u++){
+
+				console.log(String(spt[u]).split(" ")[0]);
+				eval('conf.nginx.http._remove('+ 'String(spt[u]).split(" ")[0]'+', u);');
+			}
 
 
-		console.log(i);
-		console.log(arr[i]);
+			for(var j in spt){
+
+				console.log(String(spt[j]).split(" ")[0]);
+
+				var q= "conf.nginx.http._add("+' String(spt[j]).split(" ")[0]'+","+' String(spt[j]).split(" ")[1].replace(";","")'+");";
+
+				eval(q);
+
+				// console.log(q);
+
+				// console.log(eval(q));
+			}
+
+		}else{
+
+			var q= i+"._value = "+ 'arr[i]'+";";
+
+			eval(q);
+		}
+
+		
+
+
+		
 	}
 
 });
@@ -146,24 +178,24 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 function getformarr(type,cnf){
 
 	var conf=cnf;
-	var t,m;
+	var t,m,l;
 
 
 
 	if(type==''){
 
 
-
+		l=eval('conf.nginx');
 		t= Object.keys(eval('conf.nginx'));
 
 	}else{
-
+		l=eval('conf.nginx.'+type);
 		t= Object.keys(eval('conf.nginx.'+type));
 
 	}		
 	//console.log('dhuhudf');
 
-	var l=eval('conf.nginx.http');
+	
 
 	var z=JSON.stringify(l);
 
@@ -198,10 +230,10 @@ function getformarr(type,cnf){
 
 			
 
-			if(eval('conf.nginx.'+t[i]+'._value') == ''){
+			if(eval('conf.nginx.'+i+'._value') == ''){
 				
 			}else{
-				arr.push({name:pssed[i],url:'conf.nginx.'+pssed[i], value:eval('conf.nginx.'+pssed[i]+'._value')});
+				arr.push({name:i,url:'conf.nginx.'+i, value:eval('conf.nginx.'+i+'._value')});
 			}
 
 			
