@@ -1,29 +1,52 @@
 var express = require('express');
 var bodyParser =require("body-parser");
 var router = express.Router();
+var os = require('os');
 var path = require('path');
 var NginxConfFile = require('nginx-conf').NginxConfFile;
+
 var app= express();
-
-    app.set("view engine", 'ejs');
-    app.use(express.static(__dirname + '/views'));
-
-	app.use(bodyParser());
-
+ app.set("view engine", 'ejs');
+ app.use(express.static(__dirname + '/views'));
+ app.use(bodyParser());
+var server=require('http').createServer(app);
 
 
 
+var io = require('socket.io')(server);
+   
+
+
+io.on('connection', function (socket) {
+  var addedUser = false;
+
+  // when the client emits 'new message', this listens and executes
+  socket.on('res', function () {
+    // we tell the client to execute 'new message'
+    socket.broadcast.emit('news', {
+      message: 'sharingan'
+    });
+
+    
+  });
+});
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
+
+	
  
 res.render('index.ejs'); 
   
 });
 
+
 router.get('/general', function(req, res, next) {
   res.render('genaral.ejs');
 });
+
+
+
 
 router.get('/http', function(req, res, next) {
 
@@ -46,14 +69,15 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	}	
 
 	});
-
-
   
 });
+
+
 
 router.get('/swconfig', function(req, res, next) {
   res.render('swconfig.ejs');
 });
+
 
 
 router.post('/mainpost',function(req,res,next){
@@ -76,9 +100,6 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 		console.log(i);
 		console.log(arr[i]);
 		eval(i+'._value ='+' arr[i]' +';');
-
-
-		
 	}
 
 });
@@ -86,8 +107,10 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 res.redirect('/main');
 });
 
-router.get('/main', function(req, res, next) {
 
+
+
+router.get('/main', function(req, res, next) {
 
 
 var x=[];
@@ -100,19 +123,16 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 	  	x=getformarr('',conf);
 
-	  	console.log(x);
+	  //	console.log(x);
 
 	  	 res.render('mainconfig.ejs',{elements:x});
-
-		
-
 	}	
 
 	});
 
-
- 
 });
+
+
 
 
 router.post('/httppost',function(req,res){
@@ -138,7 +158,7 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 			for(var u=0; u<spt.length ;u++){
 
-				console.log(String(spt[u]).split(" ")[0]);
+				//console.log(String(spt[u]).split(" ")[0]);
 				eval('conf.nginx.http._remove('+ 'String(spt[u]).split(" ")[0]'+', u);');
 			}
 
@@ -163,15 +183,13 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 			eval(q);
 		}
 
-		
-
-
-		
 	}
 
 });
 
 });
+
+
 
 
 
@@ -290,5 +308,5 @@ function getformarr(type,cnf){
 }
 
 
-module.exports = router;
+module.exports = router,io;
 

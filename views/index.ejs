@@ -59,11 +59,34 @@
 
         <!-- MatchHeight - Used to make sure dashboard cards are the same height -->
         <script src="node_modules/jquery-match-height/jquery.matchHeight-min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>  
+<script type="text/javascript">
+  
+  (function(){
 
+  var socket = io('http://localhost:3000');
+  var name;
+  
+
+
+  socket.on('res', function(message){
+    
+    console.log(message);
+    alert('mes');
+
+  });
+
+  }).call(this);
+  
+  
+
+
+</script>
 
 <script type="text/javascript">
 
 $(document).ready(function(){
+
 
 
 var chart1 = c3.generate({
@@ -114,10 +137,24 @@ var chart4 = c3.generate({
     size: { height: 280, width: 410 }
 });
 
-})
+
+
+
+
+
+
+
+
+
+});
   
   
 </script>
+ 
+<script>  
+
+</script>  
+
 
 
 	</head>

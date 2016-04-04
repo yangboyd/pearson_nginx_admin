@@ -2,17 +2,17 @@
 1 verbose cli [ 'node', '/usr/bin/npm', 'start' ]
 2 info using npm@1.3.6
 3 info using node@v0.10.42
-4 error Error: ENOENT, open '/media/sf_Newfolder/nginx/routes/package.json'
+4 error Error: ENOENT, open '/media/sf_nginx_admin/routes/package.json'
 5 error If you need help, you may report this log at:
 5 error     <http://github.com/isaacs/npm/issues>
 5 error or email it to:
 5 error     <npm-@googlegroups.com>
 6 error System Linux 2.6.32-573.22.1.el6.x86_64
 7 error command "node" "/usr/bin/npm" "start"
-8 error cwd /media/sf_Newfolder/nginx/routes
+8 error cwd /media/sf_nginx_admin/routes
 9 error node -v v0.10.42
 10 error npm -v 1.3.6
-11 error path /media/sf_Newfolder/nginx/routes/package.json
+11 error path /media/sf_nginx_admin/routes/package.json
 12 error code ENOENT
 13 error errno 34
 14 verbose exit [ 34, true ]
