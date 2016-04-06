@@ -13,9 +13,10 @@ var server=require('http').createServer(app);
 
 
 
+
 var io = require('socket.io')(server);
    
-
+server.listen('4444');
 
 io.on('connection', function (socket) {
   var addedUser = false;
@@ -23,13 +24,20 @@ io.on('connection', function (socket) {
   // when the client emits 'new message', this listens and executes
   socket.on('res', function () {
     // we tell the client to execute 'new message'
-    socket.broadcast.emit('news', {
-      message: 'sharingan'
-    });
+
+    var ramusg=((os.totalmem()/1024.00)/1024.00)-((os.freemem()/1024.00)/1024.00);
+
+    socket.emit('res', {
+
+
+
+      rmu: ramusg,frm:((os.freemem()/1024.00)/1024.00),host:os.hostname(),utime:format(os.uptime())});
 
     
-  });
+ });
 });
+
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -149,6 +157,8 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 	for(var i in arr){
 
+		console.log(arr);
+
 		if(String(arr[i]).split(',').length > 1){
 
 			var spt= [];
@@ -219,23 +229,7 @@ function getformarr(type,cnf){
 
 	var pssed=JSON.parse(z)
 
-	//	console.log(pssed);
-
-	// for(var y in pssed){
-
-	// 	if(y.constructor == Object){
-	// 		console.log(y.constructor);
-	// 	}else{
-	// 		//console.log(y);
-	// 		console.log(y);
-	// 		console.log(pssed[y].constructor);
-	// 	}
-	// }
-
-	// t.shift();
-	// t.shift();
-	// t.shift();
-	// t.shift();
+		//console.log(pssed);
 
 	var arr=[];
 
@@ -248,7 +242,9 @@ function getformarr(type,cnf){
 
 			
 
-			if(eval('conf.nginx.'+i+'._value') == ''){
+			if(pssed[i].constructor == Array){
+
+				console.log('arrrr');
 				
 			}else{
 				arr.push({name:i,url:'conf.nginx.'+i, value:eval('conf.nginx.'+i+'._value')});
@@ -263,33 +259,176 @@ function getformarr(type,cnf){
 
 	}else{
 
-			for(var i in pssed) {                    
-			    if(pssed[i].constructor == Array) {
+			for(var i in pssed) {      
+
+				//console.log(eval('conf.nginx.'+type+'.'+i).constructor);
+
+			    if(eval('conf.nginx.'+type+'.'+i).constructor == Array) {
+
+
+			    	var ldata=Object.keys(eval('conf.nginx.'+type+'.'+i));
+
+			    	//console.log(ldata);
+
+				    					for(var yt in ldata){
+
+				    						//console.log('********');
+
+				    						var mydt=eval('conf.nginx.'+type+'.'+i+'['+yt+']');
+
+				    						var mkeys=Object.keys(eval('conf.nginx.'+type+'.'+i+'['+yt+']'));
+				    						
+				    						if(mydt.constructor == Object){
+
+				    								if(eval('conf.nginx.'+type+'.'+i+'['+yt+']._value') == ''){
+				    										var mnkeys=Object.keys(eval('conf.nginx.'+type+'.'+i+'['+yt+']'));
+
+				    										mnkeys.shift();
+				    										mnkeys.shift();
+				    										mnkeys.shift();
+				    										mnkeys.shift();
+
+				    									// /console.log(mnkeys);
+				    									console.log('**********');
+
+				    									for(var mk in mnkeys){
+
+				    										console.log(eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]).constructor);
+
+				    										if(eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]).constructor == Array){
+
+				    											var arkeys=Object.keys(eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]));
+
+				    											console.log(arkeys);
+
+				    											for(var r in arkeys){
+
+				    													arr.push({name:i +'-'+mnkeys[mk]+'-'+arkeys[r],url:'conf.nginx.'+type+'.'+i[yt], value:eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]+'['+arkeys[r]+']._value')});
+
+				    											}
+
+				    											
+
+				    											
+
+
+				    										}else if(eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]).constructor == Object){
+
+				    												arr.push({name:i +'-'+mnkeys[mk],url:'conf.nginx.'+type+'.'+i[yt], value:eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]+'._value')});
+				    										}
+
+				    									}
+
+
+				    							
+				    							}else{
+
+				    									arr.push({name:i +'-',url:'conf.nginx.'+type+'.'+i[yt], value:eval('conf.nginx.'+type+'.'+i+'['+yt+']._value')});
+
+				    							}
+
+				    						}else{
+
+				    								
+				    							}
+
+				    						
+
+				    					}
+
+
 			    	
-			    	
-			    	console.log(i +' == '+  eval('conf.nginx.http.'+ i +'._value'));
-			    	arr.push({name:i,url:'conf.nginx.http.'+i, value:eval('conf.nginx.http.'+i)});
+			    						// for(var y in mydt){
+				    												    								
+				    					// 			if(mydt[y].constructor == Array){
+
+				    					// 				if(eval('conf.nginx.'+type+'.'+i+'['+yt+']')== Array){
+
+				    					// 						arr.push({name:i +'-'+yt,url:'conf.nginx.'+type+'.'+i+'['+yt+']', value:eval('conf.nginx.'+type+'.'+i+'['+yt+']._value')});
+
+				    					// 				}else{
+				    					// 						arr.push({name:i +'-'+yt,url:'conf.nginx.'+type+'.'+i+'['+yt+']', value:eval('conf.nginx.'+type+'.'+i+'['+yt+']._value')});
+				    					// 				}
+
+				    										
+				    									
+				    									
+				    									
+				    									
+				    					// 			}else if(mydt[y].constructor == Object){
+
+				    					// 				//arr.push({name:i +'-'+yt,url:'conf.nginx.'+type+'.'+i[yt], value:eval('conf.nginx.'+type+'.'+i+'['+yt+']._value')});
+
+				    					// 			}
+				    								
+				    					// 		}
+			    //	console.log(i +' == '+  eval('conf.nginx.http.'+ i +'._value'));
+			    //	arr.push({name:i,url:'conf.nginx.'+type+'.'+i, value:eval('conf.nginx.'+type+'.'+i)});
 
 			    } else {
 			    // Do another thing
 
-			     if(eval('conf.nginx.http.'+i+'._value') == ''){
-			  		var j=Object.keys(eval('conf.nginx.http.'+i))
+			     if(eval('conf.nginx.'+type+'.'+i+'._value') == ''){
+			  		var j=Object.keys(eval('conf.nginx.'+type+'.'+i))
 						  j.shift();
 						  j.shift();
 						  j.shift();
 						  j.shift();
-			    		
+			    		var data =[];
+			    				data=Object.keys(eval('conf.nginx.'+type+'.'+i));
 
-			    		for(var k in j){
+			    					data.shift();
+			    					data.shift();
+			    					data.shift();
+			    					data.shift();
 
-			    			arr.push({name:i +' - ' + j[k],url:'conf.nginx.http.'+i+'.'+j[k],value:eval('conf.nginx.http.'+i+'.'+j[k]+'._value')});
 
-			    		}
+
+
+			    		for(var k in data){
+
+			    				
+				    				if(eval('conf.nginx.'+type+'.'+i+'.'+data[k]+'').constructor == Array) {
+				    	
+				    					var tdata=eval('conf.nginx.'+type+'.'+i+'.'+data[k]+'');
+
+				    					for(var yt in tdata){
+
+				    						var mydt=eval('conf.nginx.'+type+'.'+i+'.'+data[k]+'['+yt+']');
+				    						//console.log(mydt);
+				    						if(mydt.constructor == Object){
+
+				    							var mdata=eval('conf.nginx.'+type+'.'+i+'.'+data[k]+'['+yt+']'+'.'+'_value');
+
+				    							if( mdata != null && data[k] == 'location'){
+
+				    								arr.push({name:i +'-'+data[k]+mdata,url:'conf.nginx.'+type+'.'+i+'.'+data[k]+'['+yt+']', value:eval('conf.nginx.'+type+'.'+i+'.'+data[k]+'.'+mdata+'._value')});
+				    								
+
+				    							}else{
+
+				    								arr.push({name:i +'-'+data[k],url:'conf.nginx.'+type+'.'+i+'.'+data[k]+'['+yt+']', value:mdata});
+				    							}
+
+				    						}
+
+				    						
+
+				    					}
+
+				    				
+				    				
+
+						    		}else{
+						    			
+						    			arr.push({name:i +' - ' + data[k],url:'conf.nginx.'+type+'.'+i+'.'+data[k],value:eval('conf.nginx.'+type+'.'+i+'.'+data[k]+'._value')});
+						    		}
+
+					     		}
 
 			    }else{
 
-			    		arr.push({name:i,url:'conf.nginx.http.'+i, value:eval('conf.nginx.http.'+i+'._value')});
+			    		arr.push({name:i,url:'conf.nginx.'+type+'.'+i, value:eval('conf.nginx.'+type+'.'+i+'._value')});
 
 
 
@@ -308,5 +447,15 @@ function getformarr(type,cnf){
 }
 
 
-module.exports = router,io;
+function format(seconds){
+  function pad(s){
+    return (s < 10 ? '0' : '') + s;
+  }
+  var hours = Math.floor(seconds / (60*60));
+  var minutes = Math.floor(seconds % (60*60) / 60);
+  var seconds = Math.floor(seconds % 60);
+
+  return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+}
+module.exports = router;
 

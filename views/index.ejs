@@ -61,31 +61,83 @@
         <script src="node_modules/jquery-match-height/jquery.matchHeight-min.js"></script>
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>  
 <script type="text/javascript">
+ 
+  var socket = io.connect('http://localhost:4444/');
   
-  (function(){
-
-  var socket = io('http://localhost:3000');
-  var name;
-  
-
-
-  socket.on('res', function(message){
-    
-    console.log(message);
-    alert('mes');
-
-  });
-
-  }).call(this);
-  
-  
-
-
 </script>
 
 <script type="text/javascript">
 
 $(document).ready(function(){
+
+var frm=50,rmu=50,host='',utime='';
+
+function sockram(){
+
+   socket.emit('res');
+
+  socket.on('res',function(data){
+
+    console.log(data);
+
+    frm=data['frm'];
+    rmu=data['rmu'];
+    host=data['host'];
+    utime=data['utime'];
+
+
+  
+  });
+
+  $('#host').text(host);
+  $('#utime').text(utime);
+}
+
+
+  
+
+setInterval(sockram,1000);
+
+var chart2 = c3.generate({
+  bindto: document.getElementById('ram'),
+    data: {
+        columns: [
+            ['Free', frm],
+            ['Used', rmu],
+        ],
+        type : 'donut',
+        onclick: function (d, i) { console.log("onclick", d, i); },
+        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+    },
+    donut: {
+        title: "Ram Usage"
+    },
+    size: { height: 280, width: 240}
+    
+});
+
+setInterval(function(){
+
+chart2.load({
+
+columns: [
+            ['Free', frm],
+            ['Used', rmu],
+        ]
+
+});
+
+},4000);
+
+setTimeout(function () {
+    chart2.unload({
+        ids: 'Free'
+    });
+    chart2.unload({
+        ids: 'Used'
+    });
+}, 2500);
 
 
 
@@ -107,24 +159,10 @@ var chart1 = c3.generate({
     size: { height: 280, width: 240 }
 });
 
-var chart2 = c3.generate({
-  bindto: document.getElementById('ram'),
-    data: {
-        columns: [
-            ['Free', 100],
-            ['Used', 100],
-        ],
-        type : 'donut',
-        onclick: function (d, i) { console.log("onclick", d, i); },
-        onmouseover: function (d, i) { console.log("onmouseover", d, i); },
-        onmouseout: function (d, i) { console.log("onmouseout", d, i); }
-    },
-    donut: {
-        title: "Ram Usage"
-    },
-    size: { height: 280, width: 240}
-    
-});
+
+
+
+
 
 var chart4 = c3.generate({
   bindto: document.getElementById('netio'),
@@ -136,14 +174,6 @@ var chart4 = c3.generate({
     },
     size: { height: 280, width: 410 }
 });
-
-
-
-
-
-
-
-
 
 
 });
@@ -238,8 +268,8 @@ var chart4 = c3.generate({
           <div class="row">
           <div class="col-md-9 col-md-push-3"> 
           <h1><span class="label label-default"><label>Server Software :</label></span><span class="label label-info"><label>nginx 1.2.3</label></span></h1>
-          <h1><span class="label label-default"><label>Server Uptime &nbsp&nbsp&nbsp:</label></span><span class="label label-info"><label>100 days 13hours</label></span></h1>
-          <h1><span class="label label-default"><label>Server OS &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:</label></span><span class="label label-info"><label>CentOS 6.5</label></span></h1>
+          <h1><span class="label label-default"><label>Server Uptime &nbsp&nbsp&nbsp:</label></span><span class="label label-info"><label id='utime'></label></span></h1>
+          <h1><span class="label label-default"><label>Server OS &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:</label></span><span class="label label-info"><label id='host'></label></span></h1>
           </div> 
 
           </div>
