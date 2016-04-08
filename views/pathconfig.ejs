@@ -101,7 +101,7 @@
           <div class="row">
           <div class="panel panel-default"> 
             <div class="panel-body col-md-7 col-md-push-2">
-            <form class="form-horizontal" method="post" action="/httppost">
+            
 
 
                 <div class="box-header with-border">
@@ -114,14 +114,14 @@
 
                 <div class="panel panel-body col-md-6" style="border-color: black;min-height:300px;overflow:auto; ">
                   <h1>Path &nbsp:&nbsp<%=elements[i][0].mname %> </h1>
-                  <form class="form-horizontal">
+                  <form class="form-horizontal" method="post" action="/pathpostconfig">
 
                
                    <% if((elements[i][0].vars).length > 0){%>
                      <%for(var j=0; j < (elements[i][0].vars).length; j++) { %>
                      <div class="input-group">
                      <div class="col-md-4"><label><%= elements[i][0].vars[j].name %></label></div>
-                      <input class="form-control" data='<%= elements[i][0].vars[j].url %>' name='<%= elements[i][0].vars[j].name %>' value='<%= elements[i][0].vars[j].value %>' type="text">
+                      <input class="form-control" data='<%= elements[i][0].vars[j].url %>' name='<%= elements[i][0].vars[j].url %>' value='<%= elements[i][0].vars[j].value %>' type="text">
                      </div>
 
 
@@ -137,7 +137,7 @@
                   
 
 
-              </form>
+             
              </div>
           </div>
 
