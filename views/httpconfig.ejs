@@ -117,6 +117,12 @@
 
                 <% for(var i=0; i < elements.length; i++) { %>
 
+                  <% if( elements[i].key == 'location' ) {%>
+
+
+
+
+                  <% }else{ %>
 
                 <div>
                   <div class="col-md-4"><label><%= elements[i].name %></label></div>
@@ -133,9 +139,8 @@
                     </div>
                   </div>
 
-
-        
-
+                 <% }   %>
+                
 
 
 
