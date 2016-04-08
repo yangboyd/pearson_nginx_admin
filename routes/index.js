@@ -11,6 +11,9 @@ var app= express();
  app.use(bodyParser());
 var server=require('http').createServer(app);
 
+var sys = require('sys');
+var exec = require('child_process').exec;
+
 
 
 
@@ -55,7 +58,7 @@ router.post('/pathpostconfig', function(req, res, next) {
 	    
 	  }else{
 
-	 var arr=[]
+	 var arr=[];
 
 	arr=req.body;
 
