@@ -5,6 +5,7 @@
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link type="application/font-sfnt" href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.3.0/fonts/PatternFlyIcons-webfont.ttf">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
 
 
@@ -19,7 +20,8 @@
         <script src="node_modules/jquery/dist/jquery.min.js"></script>
 
         <!-- Bootstrap JS -->
-        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="node_modules/bootstrap/js/tab.js"></script>
 
         <!-- C3, D3 - Charting Libraries -->
         <script src="node_modules/c3/c3.min.js"></script>
@@ -60,6 +62,21 @@
         <!-- MatchHeight - Used to make sure dashboard cards are the same height -->
         <script src="node_modules/jquery-match-height/jquery.matchHeight-min.js"></script>
 
+    <!--     <script type="text/javascript">
+          $('#myTab').click(function (e) {
+            if($(this).parent('li').hasClass('active')){
+                $( $(this).attr('href') ).hide();
+            }
+              else {
+                  e.preventDefault();
+                  $(this).tab('show');
+              }
+});
+
+
+
+        </script> -->
+
 
 
 	</head>
@@ -83,18 +100,14 @@
         </a>
         </div>
         <div class="col-md-10">
-       <form class="form-horizontal" style="margin-top:3%;" role="search">
-           <div class="form-group col-md-5">
-            <input type="text" class="form-control" placeholder="Search">
-           </div>
-            <button type="submit" class="btn fa-search"></button>
-          </form>
+       
           </div>    
       </div>
       
              
      
     </nav>
+
     <div class="container-fluid">
       <div class="row">
         <div style="min-height: 397px;" class="col-sm-9 col-md-10 col-sm-push-3 col-md-push-2">
@@ -104,8 +117,23 @@
           </ol>
 
           <div class="row">
-          <div class="panel panel-default"> 
-            <div class="panel-body col-md-7 col-md-push-2 well">
+
+
+
+
+<ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a data-toggle="tab" href="#home">Http Configuration</a></li>
+  <li><a data-toggle="tab" href="#menu1">Add Nodes</a></li>
+
+</ul>
+
+<div class="tab-content">
+
+
+  <div id="home" class="tab-pane fade in active">
+  
+     <div class="panel panel-default"> 
+          <div class="panel-body col-md-7 col-md-push-2 well">
             <form class="form-horizontal" method="post" action="/httppost">
 
 
@@ -127,14 +155,12 @@
                 <div>
                   <div class="col-md-4"><label><%= elements[i].name %></label></div>
 
-                  <div class="col-lg-8">
+                  <div class="col-md-8">
                   
-                      <div class="input-group">
+                      <div class="">
 
-                        <span class="input-group-addon">
-                          <input type="checkbox">
-                        </span>
-                        <input class="form-control" data='<%= elements[i].url %>' name='<%= elements[i].url %>' value='<%= elements[i].value %>' type="text">
+                        
+                        <input class="form-control col-md-12" data='<%= elements[i].url %>' name='<%= elements[i].url %>' value='<%= elements[i].value %>' type="text">
                       </div><!-- /input-group -->
                     </div>
                   </div>
@@ -150,29 +176,34 @@
 
                   
 
-                  <input type="submit" class="btn btn-default"></input>
+                  <input type="submit" class="btn btn-default">
 
               </form>
              </div>
           </div>
+         
+        
+  </div><!-- tab 1 closing-->
 
 
+  <div id="menu1" class="tab-pane fade">
+  
+    <h3>Menu 1</h3>
+    <p>Some content in menu 1.</p>
+    
+  </div>
 
 
+  
 
-                
-
-          </div>
+</div><!--all tabs closing-->
 
           
 
 
+ </div><!-- /col -->
 
-          
-
-
-
-        </div><!-- /col -->
+ </div>
                <div  class="col-sm-3 sidebar col-md-2 col-sm-pull-9 col-md-pull-10 sidebar-pf sidebar-pf-left ">
           <div class="panel-group" id="accordion">
             <div class="panel panel-default">
