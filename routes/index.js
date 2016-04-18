@@ -116,6 +116,7 @@ router.get('/general', function(req, res, next) {
 router.get('/http', function(req, res, next) {
 
 var x=[];
+var y=[];
 
 NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	  if (err) {
@@ -124,13 +125,27 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	  }else{
 
 	  	x=getformarr('http',conf);
+	  	y=ElementAdder(x);
 
-	  //	console.log((conf.nginx.http.server[0].location).length);
+	  	//console.log(y);
 
-	  	console.log(getlocationforms('http',conf));
+	  	console.info(y);
+	  	
+	  	var html='';
+
+	  	for(var t in y)
+	  	{
+	  		html+=builditems(y[t]);
+	  	}
+
+	  //	console.log(x);
+
+	  	//console.log(JSON.stringify(conf.nginx.http));
+
+	  	//console.log(getlocationforms('http',conf));
 	  	
 
-	  	res.render('httpconfig.ejs',{elements:x} );
+	  	res.render('httpconfig.ejs',{elements:x,nodes:html} );
 
 	}	
 
@@ -152,7 +167,7 @@ router.post('/mainpost',function(req,res,next){
 
 	arr=req.body;
 
-	console.log(arr);
+	//console.log(arr);
 
 
 NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
@@ -163,8 +178,8 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 	for(var i in arr){
 
-		console.log(i);
-		console.log(arr[i]);
+		// console.log(i);
+		// console.log(arr[i]);
 		eval(i+'._value ='+' arr[i]' +';');
 	}
 
@@ -223,7 +238,48 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 });
 
 
+function builditems(y){
 
+	var htmlm='';
+
+	  	
+			console.log(y);
+	  		 var html = "<li class='dd-item' data-id='" + y.id + "'>";
+  			 html += "<div class='dd-handle'>" + y.name+ "</div>";
+
+
+  			//console.log(y.children);
+
+  			
+	  		if( y.children.length > 0){
+
+	  			//console.log(y);
+	  			var o = y.children;
+	  			html += "<ol class='dd-list'>";
+
+	  			//console.log(o);
+
+	  			for(var b in o){
+	  				//console.log(o[b]);
+	  			//	console.log('********');
+	  			//	console.log(o[b]);
+
+	  				html+= builditems(o[b]);
+	  			//	 console.log('********');
+	  			}
+
+	  			html += "</ol>";
+	  		}
+
+	  	
+
+	  		html += "</li>";
+
+	  		htmlm +=html;
+	  	
+
+	  	return htmlm;
+}
 
 
 function getformarr(type,cnf){
@@ -232,12 +288,20 @@ function getformarr(type,cnf){
 	var t,m,l;
 
 
+	var hierarchy=[];
+	var child=[];
+
+	count=1;
+
+
 
 	if(type==''){
 
 
 		l=eval('conf.nginx');
 		t= Object.keys(eval('conf.nginx'));
+
+		
 
 	}else{
 		l=eval('conf.nginx.'+type);
@@ -267,10 +331,12 @@ function getformarr(type,cnf){
 
 			if(pssed[i].constructor == Array){
 
-				//console.log('arrrr');
+				
 				
 			}else{
-				arr.push({name:i,url:'conf.nginx.'+i, value:eval('conf.nginx.'+i+'._value')});
+
+//				console.log(i);
+				arr.push({name:i,url:'conf.nginx.'+i, value:eval('conf.nginx.'+i+'._value'),sid:'',pid:''});
 			}
 
 			
@@ -288,7 +354,7 @@ function getformarr(type,cnf){
 
 			    if(eval('conf.nginx.'+type+'.'+i).constructor == Array) {
 
-
+			    	//console.log(i);
 			    	var ldata=Object.keys(eval('conf.nginx.'+type+'.'+i));
 
 			    	//console.log(ldata);
@@ -326,7 +392,7 @@ function getformarr(type,cnf){
 
 				    											for(var r in arkeys){
 
-				    													arr.push({name:i +'-'+mnkeys[mk]+'-'+arkeys[r],url:'conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]+'['+arkeys[r]+']', value:eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]+'['+arkeys[r]+']._value'),key:mnkeys[mk]});
+				    													arr.push({name:i +'-'+mnkeys[mk]+'-'+arkeys[r],url:'conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]+'['+arkeys[r]+']', value:eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]+'['+arkeys[r]+']._value'),key:mnkeys[mk],sid:'',pid:''});
 
 				    											}
 
@@ -337,7 +403,7 @@ function getformarr(type,cnf){
 
 				    										}else if(eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]).constructor == Object){
 
-				    												arr.push({name:i +'-'+mnkeys[mk],url:'conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk], value:eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]+'._value'),key:mnkeys[mk]});
+				    												arr.push({name:i +'-'+mnkeys[mk],url:'conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk], value:eval('conf.nginx.'+type+'.'+i+'['+yt+'].'+mnkeys[mk]+'._value'),key:mnkeys[mk],sid:'',pid:''});
 				    										}
 
 				    									}
@@ -346,7 +412,7 @@ function getformarr(type,cnf){
 				    							
 				    							}else{
 
-				    									arr.push({name:i +'-',url:'conf.nginx.'+type+'.'+i+'['+yt+']', value:eval('conf.nginx.'+type+'.'+i+'['+yt+']._value'),key:''});
+				    									arr.push({name:i +'-',url:'conf.nginx.'+type+'.'+i+'['+yt+']', value:eval('conf.nginx.'+type+'.'+i+'['+yt+']._value'),key:'',sid:'',pid:''});
 
 				    							}
 
@@ -399,14 +465,14 @@ function getformarr(type,cnf){
 
 						    		}else{
 						    			
-						    			arr.push({name:i +' - ' + data[k],url:'conf.nginx.'+type+'.'+i+'.'+data[k],value:eval('conf.nginx.'+type+'.'+i+'.'+data[k]+'._value'),key:''});
+						    			arr.push({name:i +' - ' + data[k],url:'conf.nginx.'+type+'.'+i+'.'+data[k],value:eval('conf.nginx.'+type+'.'+i+'.'+data[k]+'._value'),key:'',sid:'',pid:''});
 						    		}
 
 					     		}
 
 			    }else{
 
-			    		arr.push({name:i,url:'conf.nginx.'+type+'.'+i, value:eval('conf.nginx.'+type+'.'+i+'._value'),key:''});
+			    		arr.push({name:i,url:'conf.nginx.'+type+'.'+i, value:eval('conf.nginx.'+type+'.'+i+'._value'),key:'',sid:'',pid:''});
 
 			    	}
 			    
@@ -435,19 +501,17 @@ for(var t in val)
 			
 	for(var r in locs){
 
-		console.log(r);
+		//console.log(r);
 	}
 
 	
-	console.log('*******');
+	//console.log('*******');
 	//var j=Object.keys(loc).length;
 
 	var j=locs['location'].length;
-	console.log(j);
+	//console.log(j);
 	
 	//console.log(locs);
-			
-
 	if(j == null){
 
 		var arr2=[];
@@ -476,19 +540,16 @@ for(var t in val)
 
 					arr2.push({name:x[w],url:'conf.nginx.'+type+'.server['+t+'].location.'+x[w],value:eval('conf.nginx.'+type+'.server['+t+'].location.'+x[w]+'._value')});
 
-
 				}
 
 				console.log('------- 6');
 				marr1.push({mname:eval('conf.nginx.'+type+'.server['+t+'].location._value'),vars:arr2 } );
-
-				
+	
 				
 			}else{
 
 				console.log('------- 4');
 				arr1.push({name:x,url:'conf.nginx.'+type+'.server['+t+'].location',value:eval('conf.nginx.'+type+'.server['+t+'].location.'+'_value')});
-
 
 				marr1.push({mname:eval('conf.nginx.'+type+'.server['+t+'].location._value'),vars:arr2});
 			}
@@ -522,7 +583,6 @@ for(var t in val)
 
 					arr1.push({name:x[w],url:'conf.nginx.'+type+'.server['+t+'].location['+h+'].'+x[w],value:eval('conf.nginx.'+type+'.server['+t+'].location['+h+'].'+x[w]+'._value')});
 
-
 				}
 
 				marr.push({mname:eval('conf.nginx.'+type+'.server['+t+'].location['+h+']._value'),vars:arr1 } );
@@ -531,7 +591,6 @@ for(var t in val)
 
 				
 				arr1.push({name:x,url:'conf.nginx.'+type+'.server['+t+'].location['+h+']',value:eval('conf.nginx.'+type+'.server['+t+'].location['+h+'].'+'_value')});
-
 
 				marr.push({mname:eval('conf.nginx.'+type+'.server['+t+'].location['+h+']._value'),vars:arr1});
 			}
@@ -543,14 +602,14 @@ for(var t in val)
 
 	}
 
-
 }
 
-//console.log(val);
+console.log(arr);
 
 return arr;
 
 }
+
 
 function format(seconds){
   function pad(s){
@@ -562,5 +621,86 @@ function format(seconds){
 
   return pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
 }
+
+
+function ElementAdder(arr){
+
+	var data = arr;
+	var arr=[];
+	var parr=[];
+	var elarr=[];
+	count=1;
+
+	for(var i in data){
+
+		var y = new String(data[i].url);
+		var split=y.split('.');
+
+		for(var f in split){
+				//console.log(f);
+
+			if( objectfinder(arr,split[f]) == 1){
+
+				arr.push({name:split[f],id:count,parent:split.reverse()[1],url:data[i].url,children:new Array()});
+
+				count++;
+			}
+		}
+	}
+
+	for(var r in arr){
+	
+		if(objectfinder(parr,arr[r].name) == 1){
+
+			var x=arr[r].url.lastIndexOf(arr[r].name);
+			var y =arr[r].name.length;
+
+			var url=arr[r].url.slice(0,x+y);
+
+			//console.log(y);
+
+			var t=arr[r].url.substring(0,4);
+
+			parr.push({name:arr[r].name,id:arr[r].name,children:new Array(),url:url});
+
+		}
+	}
+
+	for(var k in arr){
+
+		for(var f in parr)
+		{
+			if(arr[k].parent == parr[f].id){
+
+				parr[f].children.push(arr[k]);
+			}
+
+
+		}
+		
+
+	}
+
+	
+	//console.log(JSON.stringify(parr));
+
+	return parr;
+}
+
+function objectfinder(arr,mname){
+
+	for(var t in arr){
+
+		if(arr[t].name == mname){
+
+			return -1;
+		}
+	}
+	return 1;
+}
+
+
+
+
 module.exports = router;
 
