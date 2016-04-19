@@ -127,9 +127,9 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	  	x=getformarr('http',conf);
 	  	y=ElementAdder(x);
 
-	  	//console.log(y);
+	  //	console.log(x);
 
-	  	console.info(y);
+	  	//console.info(JSON.stringify(y));
 	  	
 	  	var html='';
 
@@ -243,7 +243,7 @@ function builditems(y){
 	var htmlm='';
 
 	  	
-			console.log(y);
+			//console.log(y);
 	  		 var html = "<li class='dd-item' data-id='" + y.id + "'>";
   			 html += "<div class='dd-handle'>" + y.name+ "</div>";
 
@@ -641,9 +641,14 @@ function ElementAdder(arr){
 
 			if( objectfinder(arr,split[f]) == 1){
 
-				arr.push({name:split[f],id:count,parent:split.reverse()[1],url:data[i].url,children:new Array()});
+				if((split[f] != 'conf') && (split[f] != 'nginx')){
 
-				count++;
+					arr.push({name:split[f],id:count,parent:split.reverse()[1],url:data[i].url,children:new Array()});
+
+					count++;
+				}
+
+				
 			}
 		}
 	}
@@ -657,32 +662,89 @@ function ElementAdder(arr){
 
 			var url=arr[r].url.slice(0,x+y);
 
-			//console.log(y);
+			console.log(x);
+
+			var par=url.split('.');
 
 			var t=arr[r].url.substring(0,4);
 
-			parr.push({name:arr[r].name,id:arr[r].name,children:new Array(),url:url});
+			parr.push({name:arr[r].name,id:arr[r].name,children:new Array(),url:url,parent:par.reverse()[1]});
 
 		}
 	}
 
-	for(var k in arr){
+	//console.info(arr);
+
+	for(var k in parr){
 
 		for(var f in parr)
 		{
-			if(arr[k].parent == parr[f].id){
+			if(parr[k].parent == parr[f].id){
 
-				parr[f].children.push(arr[k]);
+				parr[f].children.push(parr[k]);
+
 			}
-
-
 		}
-		
+
 
 	}
 
+	for(var k in parr){
+
+		for(var f in parr)
+		{
+			if((parr[f] != null) && (parr[k] != null)){
+
+				if(objectfinder(parr[f].children,parr[k].name)){
+
+				//parr[f].children.push(parr[k]);
+				
+				if(parr[k].name != 'http'){
+					console.info(parr[k]);
+					parr.splice(k,1,null);
+				}
+				
+
+			}
+
+			}
+			
+		}
+
+
+	}
+
+	parr=parr.filter(function(n){ return n != undefined });
+
+	// for(var g in parr){
+
+	// 	for(var h in parr){
+
+	// 		if(parr[h].children.length > 0){
+
+	// 			var l=parr[h].children;
+
+	// 				if(objectfinder(l,parr[g].name)){
+
+	// 					if(parr[g].name == 'http'){
+	// 						continue;
+	// 					}else{
+	// 						console.log(parr[g].name);
+	// 						parr.splice(g,1);
+	// 					}
+										
+						
+
+	// 				}
+
+	// 		}
+			
+	// 	}
+
+	// }
+
 	
-	//console.log(JSON.stringify(parr));
+	//console.info(parr);
 
 	return parr;
 }

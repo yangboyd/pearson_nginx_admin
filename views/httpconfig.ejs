@@ -7,7 +7,7 @@
   <link type="application/font-sfnt" href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.3.0/fonts/PatternFlyIcons-webfont.ttf">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Nestable/2012-10-15/jquery.nestable.js" ></script>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Nestable/2012-10-15/jquery.nestable.js" ></script>
 
 
 
@@ -48,7 +48,7 @@
         <script src="node_modules/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 
         <!-- NEstable -->
-        <script src="node_modules/nestable/jquery.nestable.js"></script>
+        <!-- <script src="node_modules/nestable/jquery.nestable.js"></script> -->
 
         <!-- Bootstrap Switch -->
         <script src="node_modules/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
@@ -74,22 +74,19 @@ var obj= "<%= nodes %>";
 
 
 
-alert(decodeEntities(obj));
+//alert(decodeEntities(obj));
 
 $('#dd-empty-placeholder').html(decodeEntities(obj));
 
 $('#nestable3').nestable();
 
-function decodeEntities(s){
-    var str, temp= document.createElement('p');
-    temp.innerHTML= s;
-    str= temp.textContent || temp.innerText;
-    temp=null;
-    return str;
-}
-
-
-
+  function decodeEntities(s){
+      var str, temp= document.createElement('p');
+      temp.innerHTML= s;
+      str= temp.textContent || temp.innerText;
+      temp=null;
+      return str;
+  }
 
 
 });
