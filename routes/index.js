@@ -240,13 +240,11 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 function builditems(y){
 
-	var htmlm='';
-
-	  	
+	
 			//console.log(y);
-	  		 var html = "<li class='dd-item' data-id='" + y.id + "'>";
-  			 html += "<div class='dd-handle'>" + y.name+ "</div>";
-
+	  		 var html = "<li class='dd-item dd3-item'  data-url='"+ y.url+"' data-id='" + y.name + "'>";
+  			 html += "<div class='dd3-handle dd-nodrag'  data-url='"+ y.url+"'>" + "</div>";
+  			 html+="<div class='dd3-content'>" +y.name+ "</div>";
 
   			//console.log(y.children);
 
@@ -260,7 +258,7 @@ function builditems(y){
 	  			//console.log(o);
 
 	  			for(var b in o){
-	  				//console.log(o[b]);
+	  			//console.log(o[b]);
 	  			//	console.log('********');
 	  			//	console.log(o[b]);
 
@@ -275,10 +273,8 @@ function builditems(y){
 
 	  		html += "</li>";
 
-	  		htmlm +=html;
-	  	
-
-	  	return htmlm;
+	  		
+	  	return html;
 }
 
 
