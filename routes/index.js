@@ -153,6 +153,24 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
   
 });
 
+router.post('/nodepost',function(req,res,next){
+
+	var arr=req.body;
+
+	NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
+
+
+		eval(arr.url+"._add("+'arr.header'+","+'arr.value'+");");
+
+	});
+
+	res.redirect('/http');
+
+	// console.log('abcd');
+	// console.log(arr);
+	// return 'arr';
+
+});
 
 
 router.get('/swconfig', function(req, res, next) {
@@ -244,7 +262,7 @@ function builditems(y){
 			//console.log(y);
 	  		 var html = "<li class='dd-item dd3-item'  data-url='"+ y.url+"' data-id='" + y.name + "'>";
   			 html += "<div class='dd3-handle dd-nodrag'  data-url='"+ y.url+"'>" + "</div>";
-  			 html+="<div class='dd3-content'>" +y.name+ "</div>";
+  			 html+="<div class='dd3-content' data-url='"+ y.url+"'>" +y.name+ "</div>";
 
   			//console.log(y.children);
 
