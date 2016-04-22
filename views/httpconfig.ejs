@@ -51,8 +51,18 @@ $(document).ready(function(){
         $("#myModal").modal();
 
 
-      }
+      }else if($(event.target).hasClass('rmnode')){
 
+              data={"url":$(event.target).attr('url'),"surl":window.location.href};
+
+              $.ajax({
+
+                url:'/removenodepost',
+                data:data,
+                method:'POST'
+
+              });
+            }
       });
 
 

@@ -206,9 +206,10 @@ router.post('/removenodepost',function(req,res,next){
 
 
 		if((splitt.reverse()[0]).indexOf('[') == -1){
-			eval(url+"._remove("+'splitt.reverse()[0]'+");");
+			eval(url+"._remove("+'splitt[0]'+");");
 
-			console.log('head');
+			console.log(url);
+			console.log(splitt.reverse()[0]);
 		}else{
 			
 			var x=	(splitt.reverse()[0]).indexOf('[');
@@ -222,15 +223,19 @@ router.post('/removenodepost',function(req,res,next){
 			}
 
 		//console.log(val);
-			eval(arr.url+"._remove("+'splitt.reverse()[0]'+","+'val'+");");
+			eval(url+"._remove("+'splitt.reverse()[0]'+","+'val'+");");
 		}
 		
+		console.log(url+"._remove("+'\''+splitt.reverse()[0]+'\''+");");
+		console.log(splitt.reverse()[0]);
+
+
 
 	});
 
-	//console.log(arr);
-
-	//res.redirect(arr.surl);
+	
+		res.redirect(arr.surl);
+	
 });
 
 
@@ -328,8 +333,8 @@ function builditems(y){
 	
 			//console.log(y);
 	  		 var html = "<li class='dd-item dd3-item'  data-url='"+ y.url+"' data-id='" + y.name + "'>";
-  			 html += "<div class='dd3-handle dd-nodrag'  data-url='"+ y.url+"'>" + "</div>";
-  			 html+="<div class='dd3-content' data-url='"+ y.url+"'>" +y.name+ "</div>";
+  			 html += "<div class='dd3-handle dd-nodrag'  data-url='"+ y.url+"'></div>";
+  			 html+="<div class='dd3-content' style='padding: 0px 10px 5px 40px !important;' data-url='"+ y.url+"'>" +y.name+ "<span class='btn glyphicon glyphicon-minus col-md-push-5 rmnode' url='"+y.url+"'></span></div>";
 
   			//console.log(y.children);
 
