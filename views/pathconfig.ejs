@@ -65,7 +65,35 @@
         <!-- MatchHeight - Used to make sure dashboard cards are the same height -->
         <script src="node_modules/jquery-match-height/jquery.matchHeight-min.js"></script>
 
+        <script type="text/javascript">
+          
+          $(document).click(function(event){
+            if($(event.target).attr('id') == "add_node"){
 
+                var url=$(event.target).attr('data-url');
+                $("#url").val($(event.target).attr('data-url'));
+                var surl=window.location.href;
+
+                
+                $("#surl").val(surl);
+                $("#myModal").modal();
+            }else if($(event.target).hasClass('rmnode')){
+
+              data={"url":$(event.target).attr('url'),"surl":window.location.href};
+
+              $.ajax({
+
+                url:'/removenodepost',
+                data:data,
+                method:'POST'
+
+              })
+
+            }
+          });
+
+
+        </script>
 
 	</head>
 	<body>
@@ -125,23 +153,24 @@
                    <% if((elements[i][0].vars).length > 0){%>
                      <%for(var j=0; j < (elements[i][0].vars).length; j++) { %>
                      <div class="input-group">
-                     <div class="col-md-4"><label><%= elements[i][0].vars[j].name %></label></div>
-                      <input class="form-control" data='<%= elements[i][0].vars[j].url %>' name='<%= elements[i][0].vars[j].url %>' value='<%= elements[i][0].vars[j].value %>' type="text">
+                     <div class="col-md-2"><label><%= elements[i][0].vars[j].name %></label></div>
+                      <input class="form-control col-md-10" data='<%= elements[i][0].vars[j].url %>' name='<%= elements[i][0].vars[j].url %>' value='<%= elements[i][0].vars[j].value %>' type="text">
+                      <div class="row"><span class="btn btn-default rmnode" url='<%= elements[i][0].vars[j].url %>'>Remove</span></div>
+
+                      
                      </div>
 
 
 
                      <%  }%>
+                     <br>
+                     <span class="btn btn-info" name="add_node" id="add_node" data-url='<%=elements[i][0].murl %>'>Add Node</span>
+                     
                       <input type="submit" class="btn btn-default"></input>
                   </form>
                 </div>
                <% } %>
-                <% } %>
-
-
-                  
-
-
+              <% } %>
              
              </div>
           </div>
@@ -163,6 +192,62 @@
 
 
         </div><!-- /col -->
+
+
+          <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add new Node</h4>
+      </div>
+      <div class="modal-body">
+        
+<div class="row">
+    <div class="col-md-12 col-sm-6 col-xs-12">
+      <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+          <i class="icon-calendar"></i>
+          <h3 class="panel-title">Inputs</h3>
+        </div>
+       
+        <div class="panel-body">
+          <form class="form-horizontal row-border" id="nodes" method="post" action="/nodepost" >
+            <div class="form-group">
+              <label class="col-md-2 control-label">Header name</label>
+              <div class="col-md-10">
+                <input name="header" id="txt_head" class="form-control" type="text">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label">Value</label>
+              <div class="col-md-10">
+                <input name="value" id="txt_val" class="form-control" type="text">
+              </div>
+            </div>
+
+            <input type="hidden" name="url" value="" id="url" >
+            <input type="hidden" name="surl" value="" id="surl" >
+            <input type="submit" class="btn btn-primary" value="Save Changes"/>
+            
+                               
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+
                <div  class="col-sm-3 sidebar col-md-2 col-sm-pull-9 col-md-pull-10 sidebar-pf sidebar-pf-left ">
           <div class="panel-group" id="accordion">
             <div class="panel panel-default">
