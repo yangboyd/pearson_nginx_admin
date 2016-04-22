@@ -201,7 +201,7 @@ router.post('/removenodepost',function(req,res,next){
 
 		}
 
-		console.log((splitt.reverse()[0]).indexOf('['));
+		//console.log((splitt.reverse()[0]).indexOf('['));
 
 
 
@@ -210,9 +210,19 @@ router.post('/removenodepost',function(req,res,next){
 
 			console.log('head');
 		}else{
-			//eval(arr.url+"._remove("+'arr.header'+","+'arr.value'+");");
+			
+			var x=	(splitt.reverse()[0]).indexOf('[');
+			var y=	(splitt.reverse()[0]).indexOf(']');
+			var val='';
 
-			console.log('head val');
+			for(var i=x+1;i<y;i++){
+
+				val+=(splitt.reverse()[0]).charAt(i);
+
+			}
+
+		//console.log(val);
+			eval(arr.url+"._remove("+'splitt.reverse()[0]'+","+'val'+");");
 		}
 		
 
