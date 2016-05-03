@@ -61,6 +61,10 @@ $(document).ready(function(){
                 data:data,
                 method:'POST'
 
+              }).done(function(data){
+
+                window.location.href = data;
+
               });
             }
       });
@@ -303,22 +307,7 @@ $(document).ready(function(){
                 </h4>
               </div>
             </div>
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 class="panel-head">
-                <div class="row">
-                <div class="col-md-3 ">
-                 <img class="img " src="images/book.png">
-                 </div>
-                 <div class="col-md-9">
-                  <a  href="swconfig">
-                    Software Configuration
-                  </a>
-                  </div>
-                  </div>  
-                </h4>
-              </div>
-            </div>
+           
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h4 class="panel-head">

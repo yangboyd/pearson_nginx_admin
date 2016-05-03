@@ -1,9 +1,16 @@
 var express = require('express');
 var bodyParser =require("body-parser");
+var parser = require('./parser');
 var router = express.Router();
+var cpu=require('./cpu.js');
 var os = require('os');
 var path = require('path');
 var NginxConfFile = require('nginx-conf').NginxConfFile;
+var sys = require('sys');
+var exec = require('sync-exec');
+
+
+//var parser = require("nginx-log-parser")(source);
 
 var app= express();
  app.set("view engine", 'ejs');
@@ -11,15 +18,16 @@ var app= express();
  app.use(bodyParser());
 var server=require('http').createServer(app);
 
-var sys = require('sys');
-var exec = require('child_process').exec;
+
+var child,cp;
+
 
 
 
 
 var io = require('socket.io')(server);
    
-server.listen('4444');
+server.listen('4445');
 
 io.on('connection', function (socket) {
   var addedUser = false;
@@ -27,25 +35,71 @@ io.on('connection', function (socket) {
   // when the client emits 'new message', this listens and executes
   socket.on('res', function () {
     // we tell the client to execute 'new message'
+    cp=cpu.foo(os);
+    
 
     var ramusg=((os.totalmem()/1024.00)/1024.00)-((os.freemem()/1024.00)/1024.00);
 
-    socket.emit('res', {
-
-
-
-      rmu: ramusg,frm:((os.freemem()/1024.00)/1024.00),host:os.hostname(),utime:format(os.uptime())});
+    socket.emit('res', {rmu: ramusg,frm:((os.freemem()/1024.00)/1024.00),host:os.hostname(),utime:format(os.uptime()),cpu:cp});
 
     
  });
+
+
 });
 
-
+// Listen for incoming socket requests on the special “connection” event
 
 /* GET home page. */
+
+
 router.get('/', function(req, res, next) {
 
-res.render('index.ejs'); 
+	var nginxv="";
+	 var sarr1=[];
+	 var sarr="";
+
+	
+ sarr = exec('cat /var/log/nginx/access.log').stdout;
+
+ console.log(sarr);
+  
+//   console.log(child1.stdout.on);
+
+  var str = new String(sarr);
+
+	//console.info(str);
+ 
+  console.log(str.split('\n').length);
+ 
+
+   for(var t in str.split('\n')){
+
+  	
+  	var data = parser(str.split('\n')[t]);
+ 	
+ 	sarr1.push(data);
+
+ 	//console.log(data);
+	
+  }
+
+  console.log(sarr1);
+
+  NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
+	  if (err) {
+	    console.log(err);
+	    
+	  }else{
+
+	  	console.log(conf.nginx.http.server);
+	}	
+
+	});
+
+
+
+res.render('index.ejs',{version:nginxv}); 
   
 });
 
@@ -71,6 +125,7 @@ router.post('/pathpostconfig', function(req, res, next) {
 
 	//console.log(arr);
 
+	
 	res.redirect('/path');
 
 	}	
@@ -109,7 +164,9 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 
 router.get('/general', function(req, res, next) {
+
   res.render('genaral.ejs');
+
 });
 
 
@@ -140,14 +197,9 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	  		html+=builditems(y[t]);
 	  	}
 
-	  //	console.log(x);
+	  child = exec("nginx -t");
 
-	  	//console.log(JSON.stringify(conf.nginx.http));
-
-	  	//console.log(getlocationforms('http',conf));
-	  	
-
-	  	res.render('httpconfig.ejs',{elements:x,nodes:html} );
+	  res.render('httpconfig.ejs',{elements:x,nodes:html} );
 
 	}	
 
@@ -170,6 +222,8 @@ router.post('/nodepost',function(req,res,next){
 
 	});
 
+
+	child = exec("nginx -t");
 	//console.log(arr);
 
 	res.redirect(arr.surl);
@@ -203,8 +257,6 @@ router.post('/removenodepost',function(req,res,next){
 
 		//console.log((splitt.reverse()[0]).indexOf('['));
 
-
-
 		if((splitt.reverse()[0]).indexOf('[') == -1){
 			eval(url+"._remove("+'splitt[0]'+");");
 
@@ -233,22 +285,33 @@ router.post('/removenodepost',function(req,res,next){
 
 	});
 
-	
-		res.redirect(arr.surl);
+		console.log(arr.surl);
+		return arr.surl;
 	
 });
-
-
-
-
-
-
-
 
 router.get('/swconfig', function(req, res, next) {
-  res.render('swconfig.ejs');
+
+	var nginxv="";
+
+  child = exec("nginx -v");
+
+  res.render('swconfig.ejs',{nv:nginxv});
+
 });
 
+
+router.post('/swconfigpost',function(req,res,next){
+
+
+
+var arr=req.body;
+
+
+
+	res.redirect('/swconfig');
+
+});
 
 
 router.post('/mainpost',function(req,res,next){
@@ -507,8 +570,6 @@ function getformarr(type,cnf){
 				    								
 				    							}
 
-				    						
-
 				    					}
 
 			    } else {
@@ -588,9 +649,11 @@ var arr=[];
 
 var val=eval('conf.nginx.'+type+'.server');
 
+
+
 for(var t in val)
 {
-	//console.log(t);
+	console.log(t);
 
 	var loc=eval('conf.nginx.'+type+'.server['+t+'].location');
 	var locs=eval('conf.nginx.'+type+'.server['+t+']');

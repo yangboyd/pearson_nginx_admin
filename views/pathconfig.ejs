@@ -155,17 +155,17 @@
 
                 <% for(var i=0; i < elements.length; i++) { %>
 
-                <div class="panel panel-body col-md-6 well" style="min-height:300px;overflow:auto; ">
+                <div class="panel panel-body col-md-6 well" style="min-height:400px;overflow-y:scroll; ">
                   <h1>Path &nbsp:&nbsp<%=elements[i][0].mname %> </h1>
                   <form class="form-horizontal" method="post" action="/pathpostconfig">
 
                
                    <% if((elements[i][0].vars).length > 0){%>
                      <%for(var j=0; j < (elements[i][0].vars).length; j++) { %>
-                     <div class="input-group">
+                     <div class="input-group col-md-12">
                      <div class="col-md-2"><label><%= elements[i][0].vars[j].name %></label></div>
                       <input class="form-control col-md-10" data='<%= elements[i][0].vars[j].url %>' name='<%= elements[i][0].vars[j].url %>' value='<%= elements[i][0].vars[j].value %>' type="text">
-                      <div class="row"><span class="btn btn-default rmnode" url='<%= elements[i][0].vars[j].url %>'>Remove</span></div>
+                      <div class="row"><span class="btn btn-default col-md-4 col-md-push-6 rmnode" url='<%= elements[i][0].vars[j].url %>'>Remove</span></div>
 
                       
                      </div>
@@ -276,22 +276,7 @@
                 </h4>
               </div>
             </div>
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4 class="panel-head">
-                <div class="row">
-                <div class="col-md-3 ">
-                 <img class="img " src="images/book.png">
-                 </div>
-                 <div class="col-md-9">
-                  <a  href="swconfig">
-                    Software Configuration
-                  </a>
-                  </div>
-                  </div>  
-                </h4>
-              </div>
-            </div>
+           
             <div class="panel panel-default">
               <div class="panel-heading">
                 <h4 class="panel-head">
