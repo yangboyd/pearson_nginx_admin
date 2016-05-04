@@ -77,8 +77,6 @@ var rmu,ucpu=50;
 var host='';
 var utime='';
 
-//alert(<%version%>);
-
 
 function sockram(){
 
@@ -108,6 +106,7 @@ ucpu=ucpu.toFixed(0);
 
   $('#host').text(host);
   $('#utime').text(utime);
+ 
 }
 
 
@@ -302,7 +301,7 @@ var chart4 = c3.generate({
 
           <div class="row">
           <div class="col-md-9 col-md-push-3"> 
-          <h1><span class="label label-default"><label>Server Software :</label></span><span class="label label-info"><label><% version %></label></span></h1>
+          <h1><span class="label label-default"><label>Server Software :</label></span><span class="label label-info"><label id='version'><%= version %></label></span></h1>
           <h1><span class="label label-default"><label>Server Uptime &nbsp&nbsp&nbsp:</label></span><span class="label label-info"><label id='utime'></label></span></h1>
           <h1><span class="label label-default"><label>Server OS &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:</label></span><span class="label label-info"><label id='host'></label></span></h1>
           </div> 

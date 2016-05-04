@@ -58,11 +58,14 @@ router.get('/', function(req, res, next) {
 	var nginxv="";
 	 var sarr1=[];
 	 var sarr="";
-
+	 
 	
  sarr = exec('cat /var/log/nginx/access.log').stdout;
+ nginxv=exec('nginx -v').stderr;
 
- console.log(sarr);
+ console.info(nginxv);
+
+// console.log(sarr);
   
 //   console.log(child1.stdout.on);
 
@@ -84,7 +87,7 @@ router.get('/', function(req, res, next) {
 	
   }
 
-  console.log(sarr1);
+  //console.log(sarr1);
 
   NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	  if (err) {
@@ -92,7 +95,14 @@ router.get('/', function(req, res, next) {
 	    
 	  }else{
 
-	  	console.log(conf.nginx.http.server);
+	  	var s=conf.nginx.http.server;
+
+	  	//console.info(s);
+
+	  	var h= new String(s);
+
+	  	getsites(h);
+
 	}	
 
 	});
@@ -389,6 +399,39 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 });
 
 });
+
+function getsites(h){
+var sites=[];
+var sites1=[];
+
+
+var x=h.split('\n');
+
+	  	for(var t in x){
+
+	  		if(x[t].search('listen') !=-1){
+
+	  		 	sites.push(x[t]);
+	  		}
+
+
+	  	}
+
+	  	for(var y in sites){
+
+	  		var str= new String(sites[y]);
+
+	  		var strarr=str.split(' ');
+
+	  		console.log(strarr.reverse());
+
+	  		// sites1.push()
+
+	  	}
+
+console.log(sites.reverse());
+
+}
 
 
 function builditems(y){
