@@ -58,12 +58,28 @@ router.get('/', function(req, res, next) {
 	var nginxv="";
 	 var sarr1=[];
 	 var sarr="";
+	 var err="";
 	 
 	
  sarr = exec('cat /var/log/nginx/access.log').stdout;
  nginxv=exec('nginx -v').stderr;
 
- console.info(nginxv);
+ var ngerr=exec('nginx -t').stderr;
+
+ if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
+ 	err=''
+
+ }else if((ngerr.search('syntax is ok') == -1)){
+
+ 	err='There is a syntax error in the nginx.conf file.'
+
+ }else if(ngerr.search('test is successful') == -1){
+
+ 	err='There is an error in the configuration file. Nodes you have entered might be causing the error.'
+ }
+
+ //console.info(nginxv);
+ console.info(ngerr);
 
 // console.log(sarr);
   
@@ -103,7 +119,7 @@ router.get('/', function(req, res, next) {
 
 	  	var msites=getsites(h);
 
-	  	console.log(sarr);
+	  	//console.log(sarr);
 
 	}	
 
@@ -111,12 +127,13 @@ router.get('/', function(req, res, next) {
 
 
 
-res.render('index.ejs',{version:nginxv}); 
+res.render('index.ejs',{version:nginxv,error:err}); 
   
 });
 
 
 router.post('/pathpostconfig', function(req, res, next) {
+	var err="";
 
 	NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	  if (err) {
@@ -137,6 +154,7 @@ router.post('/pathpostconfig', function(req, res, next) {
 
 	//console.log(arr);
 
+
 	
 	res.redirect('/path');
 
@@ -155,12 +173,28 @@ router.get('/path', function(req, res, next) {
 	var arr=[];
 
 NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
+	var err="";
 	  if (err) {
 	    console.log(err);
 	    
 	  }else{
 
 	  arr=getlocationforms('http',conf);
+
+
+	  var ngerr=exec('nginx -t').stderr;
+
+ if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
+ 	err=''
+
+ }else if((ngerr.search('syntax is ok') == -1)){
+
+ 	err='There is a syntax error in the nginx.conf file.'
+
+ }else if(ngerr.search('test is successful') == -1){
+
+ 	err='There is an error in the configuration file. Nodes you have entered might be causing the error.'
+ }
 
 	  //console.log(arr[0][0].vars);
 	  res.render('pathconfig.ejs',{elements:arr}); 
@@ -186,7 +220,7 @@ router.get('/http', function(req, res, next) {
 
 var x=[];
 var y=[];
-
+var err="";
 NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	  if (err) {
 	    console.log(err);
@@ -211,7 +245,25 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 
 	  child = exec("nginx -t");
 
-	  res.render('httpconfig.ejs',{elements:x,nodes:html} );
+
+var ngerr=exec('nginx -t').stderr;
+
+ if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
+ 	err=''
+
+ }else if((ngerr.search('syntax is ok') == -1)){
+
+ 	err='There is a syntax error in the nginx.conf file.'
+
+ }else if(ngerr.search('test is successful') == -1){
+
+ 	err='There is an error in the configuration file. Nodes you have entered might be causing the error.'
+ }
+
+
+
+
+	  res.render('httpconfig.ejs',{elements:x,nodes:html,error:err} );
 
 	}	
 
@@ -298,17 +350,33 @@ router.post('/removenodepost',function(req,res,next){
 	});
 
 		console.log(arr.surl);
-		return arr.surl;
+
+		res.redirect(arr.surl);
 	
 });
 
 router.get('/swconfig', function(req, res, next) {
 
 	var nginxv="";
+	var err="";
 
   child = exec("nginx -v");
 
-  res.render('swconfig.ejs',{nv:nginxv});
+ var ngerr=exec('nginx -t').stderr;
+
+ if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
+ 	err=''
+
+ }else if((ngerr.search('syntax is ok') == -1)){
+
+ 	err='There is a syntax error in the nginx.conf file.'
+
+ }else if(ngerr.search('test is successful') == -1){
+
+ 	err='There is an error in the configuration file. Nodes you have entered might be causing the error.'
+ }
+
+  res.render('swconfig.ejs',{nv:nginxv,error:err});
 
 });
 
@@ -364,11 +432,28 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	    console.log(err);
 	    
 	  }else{
+	  	var err="";
 
 	  	x=getformarr('',conf);
 
+
+
+var ngerr=exec('nginx -t').stderr;
+
+ if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
+ 	err=''
+
+ }else if((ngerr.search('syntax is ok') == -1)){
+
+ 	err='There is a syntax error in the nginx.conf file.'
+
+ }else if(ngerr.search('test is successful') == -1){
+
+ 	err='There is an error in the configuration file. Nodes you have entered might be causing the error.'
+ }
+
 	
-	  	 res.render('mainconfig.ejs',{elements:x});
+	  	 res.render('mainconfig.ejs',{elements:x,error:err});
 	}	
 
 	});
@@ -399,6 +484,9 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	}
 
 });
+
+
+res.redirect('http');
 
 });
 
