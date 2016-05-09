@@ -67,7 +67,11 @@ router.get('/', function(req, res, next) {
  var ngerr=exec('nginx -t').stderr;
 
  if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
- 	err=''
+ 	err='';
+
+ 	exec('service nginx reload');
+ 	exec('service nginx restart');
+
 
  }else if((ngerr.search('syntax is ok') == -1)){
 
@@ -185,7 +189,12 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 	  var ngerr=exec('nginx -t').stderr;
 
  if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
- 	err=''
+ 	err='';
+
+ 	exec('service nginx reload');
+ 	exec('service nginx restart');
+
+
 
  }else if((ngerr.search('syntax is ok') == -1)){
 
@@ -249,7 +258,10 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 var ngerr=exec('nginx -t').stderr;
 
  if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
- 	err=''
+ 	err='';
+
+ 	exec('service nginx reload');
+ 	exec('service nginx restart');
 
  }else if((ngerr.search('syntax is ok') == -1)){
 
@@ -367,6 +379,10 @@ router.get('/swconfig', function(req, res, next) {
  if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
  	err=''
 
+ 	exec('service nginx reload');
+ 	exec('service nginx restart');
+
+
  }else if((ngerr.search('syntax is ok') == -1)){
 
  	err='There is a syntax error in the nginx.conf file.'
@@ -442,6 +458,9 @@ var ngerr=exec('nginx -t').stderr;
 
  if((ngerr.search('syntax is ok') != -1) && (ngerr.search('test is successful') != -1) ){
  	err=''
+
+ 	exec('service nginx reload');
+ 	exec('service nginx restart');
 
  }else if((ngerr.search('syntax is ok') == -1)){
 
