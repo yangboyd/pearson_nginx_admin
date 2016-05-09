@@ -101,7 +101,9 @@ router.get('/', function(req, res, next) {
 
 	  	var h= new String(s);
 
-	  	getsites(h);
+	  	var msites=getsites(h);
+
+	  	console.log(sarr);
 
 	}	
 
@@ -403,6 +405,7 @@ NginxConfFile.create('/etc/nginx/nginx.conf', function(err, conf) {
 function getsites(h){
 var sites=[];
 var sites1=[];
+var msite='';
 
 
 var x=h.split('\n');
@@ -411,25 +414,50 @@ var x=h.split('\n');
 
 	  		if(x[t].search('listen') !=-1){
 
-	  		 	sites.push(x[t]);
+	  			console.log(x[t]);
+
+	  			if(x[t] != ''){
+	  				sites.push(x[t]);
+	  			}
+	  		 	
 	  		}
 
 
 	  	}
 
+	  	console.log('Hell-cat '+ValidateIPaddress('192.21.12.33:8080'));   
+
 	  	for(var y in sites){
 
 	  		var str= new String(sites[y]);
 
-	  		var strarr=str.split(' ');
+	  		var strarr=str.trim().split(' ');
 
-	  		console.log(strarr.reverse());
+	  		var v=strarr.reverse();
 
-	  		// sites1.push()
+	  		if(v[0].search('default_server') != -1){
+
+	  			if(v[1].match(/^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/) != null){
+
+	  				msite='http://localhost:'+v[1];
+
+	  			}else if(ValidateIPaddress(v[1]) == true){
+
+	  				msite='http://'+v[1];
+
+	  			}
+
+	  		}else if(ValidateIPaddress(v[1]) == true){
+	  				
+	  				msite='http://'+v[1];
+	  			}
+
+
+	  		sites1.push(msite);
 
 	  	}
 
-console.log(sites.reverse());
+return sites1;
 
 }
 
@@ -965,8 +993,22 @@ function objectfinder(arr,mname){
 	return 1;
 }
 
+function ValidateIPaddress(ipaddress)   
+{  
+
+	if(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/.test(ipaddress)){
+     
+    return (true) 
+
+  }else if(/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ipaddress))  
+ 	{
+  	return (true)
+  }  	
+
+return (false)  
+} 
+
 
 
 
 module.exports = router;
-
